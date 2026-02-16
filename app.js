@@ -6,8 +6,7 @@ let state = {
     checkedDates: {}, // Object for O(1) lookup: { "YYYY-MM-DD": true }
     repairedDates: {}, // New: Track which dates were repaired
     repairs: 0,
-    // We don't strictly track 'lastRepairEarned' here, simpler to just trigger on crossing thresholds.
-    // However, to prevent farming, we just check on action.
+    seeded: false // Track if we've run the initial setup
 };
 
 // DOM Elements
@@ -21,8 +20,12 @@ const prevMonthBtn = document.getElementById('prev-month');
 const nextMonthBtn = document.getElementById('next-month');
 const overlay = document.getElementById('celebration-overlay');
 
+// Setup Wizard Elements
+const setupModal = document.getElementById('setup-modal');
+const setupCalendarGrid = document.getElementById('setup-calendar-grid');
+const finishSetupBtn = document.getElementById('finish-setup-btn');
+
 // Date Helpers
-// Normalize today to midnight to avoid time comparison issues
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 
@@ -38,49 +41,98 @@ function dateToString(date) {
 // Initialization
 function init() {
     loadData();
-    renderApp();
+
+    // Check if seeded
+    if (!state.seeded) {
+        // Show Setup Wizard
+        if (setupModal) {
+            setupModal.classList.remove('hidden');
+            renderSetupCalendar();
+            finishSetupBtn.addEventListener('click', finishSetup);
+        }
+    } else {
+        renderApp();
+    }
 
     checkInBtn.addEventListener('click', handleCheckIn);
     prevMonthBtn.addEventListener('click', () => changeMonth(-1));
     nextMonthBtn.addEventListener('click', () => changeMonth(1));
-
-    // Seed data as requested (Jan 1 - Feb 14)
-    seedHistory(); // Re-enabled with safety check
-    renderApp();
 }
 
-function seedHistory() {
-    // Safety: If Jan 1 is already checked, assume seeded.
-    if (state.checkedDates['2026-01-01']) return;
+// Setup Logic
+let setupState = {
+    checked: {},
+    repaired: {}
+};
 
-    // Only seed if we haven't already (check if Jan 1 is there)
-    // OR just force it since user asked. Let's force it to ensure they get the data.
-    const start = new Date(2026, 0, 1); // Jan 1 2026
-    const end = new Date(2026, 1, 13);  // Feb 13 2026 (Excluding 14-16)
+function renderSetupCalendar() {
+    setupCalendarGrid.innerHTML = '';
+
+    // Jan 1 2026 to Today
+    const start = new Date(2026, 0, 1);
+    const end = new Date(today);
 
     let current = new Date(start);
+
     while (current <= end) {
-        state.checkedDates[dateToString(current)] = true;
+        const dateStr = dateToString(current);
+        const el = document.createElement('div');
+        el.className = 'setup-day';
+        el.textContent = current.getDate();
+        el.dataset.date = dateStr;
+
+        // Month label tooltip
+        if (current.getDate() === 1) {
+            el.style.border = '1px solid var(--primary-color)';
+            el.title = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(current);
+        }
+
+        el.onclick = () => toggleSetupDay(dateStr, el);
+        setupCalendarGrid.appendChild(el);
+
         current.setDate(current.getDate() + 1);
     }
+}
 
-    // Explicitly uncheck requested dates (14, 15)
-    // 16 is checked, 17 is not.
-    const uncheck = [
-        new Date(2026, 1, 14),
-        new Date(2026, 1, 15)
-    ];
-    uncheck.forEach(d => {
-        delete state.checkedDates[dateToString(d)];
-    });
+function toggleSetupDay(dateStr, el) {
+    // Cycle: Null -> Checked -> Repaired -> Null
+    if (setupState.checked[dateStr]) {
+        // Was checked, now Repair
+        delete setupState.checked[dateStr];
+        setupState.repaired[dateStr] = true;
+        setupState.checked[dateStr] = true; // Needs to be checked AND repaired logically? 
+        // In our app, repaired implies checked.
 
-    // Explicitly check Feb 16 (requested)
-    state.checkedDates['2026-02-16'] = true;
+        el.className = 'setup-day repaired';
+    } else if (setupState.repaired[dateStr]) {
+        // Was repaired, now Null
+        delete setupState.repaired[dateStr];
+        delete setupState.checked[dateStr];
 
-    // Set repairs to 4 (43 days / 10 = 4)
-    if (state.repairs < 4) state.repairs = 4;
+        el.className = 'setup-day';
+    } else {
+        // Was null, now Checked
+        setupState.checked[dateStr] = true;
+        el.className = 'setup-day checked';
+    }
+}
+
+function finishSetup() {
+    // Save setup state to main state
+    state.checkedDates = { ...setupState.checked };
+    state.repairedDates = { ...setupState.repaired };
+
+    // Mark as seeded
+    state.seeded = true;
+
+    // Default repairs? Let's give them 3 to start if they set up history.
+    if (Object.keys(state.checkedDates).length > 0) {
+        state.repairs = 3;
+    }
 
     saveData();
+    setupModal.classList.add('hidden');
+    renderApp();
 }
 
 // Data Management
