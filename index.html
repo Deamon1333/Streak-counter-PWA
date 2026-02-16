@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streak Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon.png">
+    <meta name="theme-color" content="#0f172a">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <div class="stats-card">
+                <div class="stat-item">
+                    <span class="stat-label">Current Streak</span>
+                    <span class="stat-value" id="current-streak">0</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-label">Repairs Available</span>
+                    <span class="stat-value" id="repairs-count">0</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="action-area">
+                <button id="check-in-btn" class="glow-button">
+                    <span class="btn-text">Check In Today</span>
+                    <div class="btn-glow"></div>
+                </button>
+                <div id="status-message" class="status-message"></div>
+            </div>
+
+            <div class="calendar-container glass-panel">
+                <div class="calendar-header">
+                    <button id="prev-month" class="icon-btn">&lt;</button>
+                    <h2 id="month-year-display">Month Year</h2>
+                    <button id="next-month" class="icon-btn">&gt;</button>
+                </div>
+                <div class="calendar-grid" id="calendar-grid">
+                    <!-- Calendar days will be generated here -->
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Keep the streak alive! Every 10 days earns a repair.</p>
+        </footer>
+    </div>
+
+    <!-- Celebration Overlay -->
+    <div id="celebration-overlay" class="overlay hidden">
+        <div class="celebration-content">
+            <h2>Streak Extended!</h2>
+            <div class="confetti"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
