@@ -64,15 +64,18 @@ function seedHistory() {
         current.setDate(current.getDate() + 1);
     }
 
-    // Explicitly uncheck requested dates (14, 15, 16)
+    // Explicitly uncheck requested dates (14, 15)
+    // 16 is checked, 17 is not.
     const uncheck = [
         new Date(2026, 1, 14),
-        new Date(2026, 1, 15),
-        new Date(2026, 1, 16)
+        new Date(2026, 1, 15)
     ];
     uncheck.forEach(d => {
         delete state.checkedDates[dateToString(d)];
     });
+
+    // Explicitly check Feb 16 (requested)
+    state.checkedDates['2026-02-16'] = true;
 
     // Set repairs to 4 (43 days / 10 = 4)
     if (state.repairs < 4) state.repairs = 4;
