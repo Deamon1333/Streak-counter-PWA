@@ -349,3 +349,120 @@ footer {
         font-size: 2rem;
     }
 }
+
+/* Setup Modal */
+#setup-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+#setup-modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    background: var(--surface-light);
+    border: 1px solid var(--glass-border);
+    padding: 2rem;
+    border-radius: 24px;
+    max-width: 90%;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    /* Ensure acts nicely on mobile */
+}
+
+.modal-content h2 {
+    margin-bottom: 0.5rem;
+    color: var(--accent-primary);
+}
+
+.modal-content p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.legend .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.legend .dot.checked {
+    background: var(--success-color);
+    box-shadow: 0 0 8px var(--success-glow);
+}
+
+.legend .dot.repaired {
+    background: var(--warning-color);
+    box-shadow: 0 0 8px var(--warning-glow);
+}
+
+.legend .dot.empty {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.setup-scroll-container {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+}
+
+.setup-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-lighter);
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+}
+
+.setup-day:hover {
+    transform: scale(1.05);
+}
+
+.setup-day.checked {
+    background: var(--success-color);
+    color: #fff;
+    box-shadow: 0 0 15px var(--success-glow);
+}
+
+.setup-day.repaired {
+    background: var(--warning-color);
+    color: #fff;
+    box-shadow: 0 0 15px var(--warning-glow);
+}

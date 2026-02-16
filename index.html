@@ -65,6 +65,26 @@
         </div>
     </div>
 
+    <!-- Setup Modal -->
+    <div id="setup-modal" class="hidden">
+        <div class="modal-content">
+            <h2>Setup Your History</h2>
+            <p>Tap days to toggle status:</p>
+            <div class="legend">
+                <span style="color:var(--text-primary)"><span class="dot checked"></span> Checked</span>
+                <span style="color:var(--text-primary)"><span class="dot repaired"></span> Repaired</span>
+                <span style="color:var(--text-primary)"><span class="dot empty"
+                        style="background:var(--surface-lighter)"></span> Empty</span>
+            </div>
+            <!-- Scrollable container -->
+            <div class="setup-scroll-container">
+                <div id="setup-calendar-grid" class="calendar-grid"></div>
+            </div>
+            <button id="finish-setup-btn" class="glow-button" style="font-size: 1rem; padding: 0.8rem 2rem;">Start
+                Tracking</button>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 </body>
 
