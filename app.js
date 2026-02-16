@@ -45,11 +45,14 @@ function init() {
     nextMonthBtn.addEventListener('click', () => changeMonth(1));
 
     // Seed data as requested (Jan 1 - Feb 14)
-    // seedHistory(); // <--- Disabled to persist user changes
+    seedHistory(); // Re-enabled with safety check
     renderApp();
 }
 
 function seedHistory() {
+    // Safety: If Jan 1 is already checked, assume seeded.
+    if (state.checkedDates['2026-01-01']) return;
+
     // Only seed if we haven't already (check if Jan 1 is there)
     // OR just force it since user asked. Let's force it to ensure they get the data.
     const start = new Date(2026, 0, 1); // Jan 1 2026
